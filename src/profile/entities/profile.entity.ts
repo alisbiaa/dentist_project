@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, OneToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne } from 'typeorm';
 
 @Entity()
 export class Profile  extends BaseEntity {
@@ -20,13 +20,13 @@ export class Profile  extends BaseEntity {
   @Column({ type: 'date' })
   date_of_birth: number; // note. all dates are epoch numbers
 
-  @Column({ nullable: true})
+  @Column({ nullable: true, unique: true})
   passport_id: number | undefined;
 
-  @Column({ nullable: true})
+  @Column({ nullable: true, unique : true})
   national_id: number | undefined;
 
-  @OneToOne(type => Profile, profile => profile.id)
+  @ManyToOne(type => Profile, profile => profile.id)
   role_id: number; // note. FK -> roles model
 
   @Column({ default: true})

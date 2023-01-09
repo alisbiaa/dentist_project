@@ -4,6 +4,7 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Profile } from './entities/profile.entity';
 import { Repository } from 'typeorm';
+import { IResponse } from '../utils/Interfaces';
 
 @Injectable()
 export class ProfileService {
@@ -14,14 +15,23 @@ export class ProfileService {
   ) {
   }
   
-  create(createProfileDto: CreateProfileDto) {
-    // this.profileRepository.create({
-    //
-    // })
-    const profile = new Profile();
-    profile.active = true;
-    profile.save().then(d => console.log(d)).catch(e => console.log(e));
-    return `This action adds a new profile ${createProfileDto.active}`;
+  async create(createProfileDto: CreateProfileDto) : Promise<IResponse<Profile>> {
+    return this.profileRepository.insert(createProfileDto)
+      .then(data => {
+        return {
+          message: 'Profile has been created!',
+          success: true,
+          data: data.raw,
+        };
+      })
+      .catch(error => {
+        return {
+          success : false,
+          message : 'Could not create profile...',
+          error,
+          data : null
+        }
+      });
   }
 
   findAll() {
